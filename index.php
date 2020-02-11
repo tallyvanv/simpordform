@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 //we are going to use session variables so we need to enable sessions
 session_start();
 
-function whatIsHappening() {
+/*function whatIsHappening() {
     echo '<h2>$_GET</h2>';
     var_dump($_GET);
     echo '<h2>$_POST</h2>';
@@ -19,60 +19,45 @@ function whatIsHappening() {
     echo '<h2>$_SESSION</h2>';
     var_dump($_SESSION);
 }
-whatIsHappening();
+whatIsHappening();*/
 //your products with their price.
 
-$products = [
-    ['name' => 'Club Ham', 'price' => 3.20],
-    ['name' => 'Club Cheese', 'price' => 3],
-    ['name' => 'Club Cheese & Ham', 'price' => 4],
-    ['name' => 'Club Chicken', 'price' => 4],
-    ['name' => 'Club Salmon', 'price' => 5]
-];
-
-$products = [
+$dranks = [
     ['name' => 'Cola', 'price' => 2],
     ['name' => 'Fanta', 'price' => 2],
     ['name' => 'Sprite', 'price' => 2],
     ['name' => 'Ice-tea', 'price' => 3],
 ];
+$food = [
+    ['name' => 'Club vegan cheese', 'price' => 3.20],
+    ['name' => 'Club vegan Cheese', 'price' => 3],
+    ['name' => 'Club vegan Cheese & Ham', 'price' => 4],
+    ['name' => 'Club vegan Chicken', 'price' => 4],
+    ['name' => 'Club vegan Salmon', 'price' => 5]
+];
 
-function whichItems(){
-    if(isset($_GET['food'])) {
-        switch ($_GET['food']) {
-            case '1':
-                return $products = [
-                    ['name' => 'Club Ham', 'price' => 3.20],
-                    ['name' => 'Club Cheese', 'price' => 3],
-                    ['name' => 'Club Cheese & Ham', 'price' => 4],
-                    ['name' => 'Club Chicken', 'price' => 4],
-                    ['name' => 'Club Salmon', 'price' => 5]
-                ];
-                break;
-            default:
-                return $products = [
-                    ['name' => 'Cola', 'price' => 2],
-                    ['name' => 'Fanta', 'price' => 2],
-                    ['name' => 'Sprite', 'price' => 2],
-                    ['name' => 'Ice-tea', 'price' => 3],
-                ];
+$products = $dranks;
+if (isset($_GET["food"])) {
+    if ($_GET["food"] == 1) {
+        $products = $food;
+    } else {
+        $products = $dranks;
+    }
+}
+$totalValue = 0;
+$valueArr = [];
+
+if (isset($_POST["products"])) {
+    foreach ($products AS $i => $product) {
+        if ($_POST['products'][$i] == '1') {
+            array_push($valueArr, $product['price']);
         }
     }
-    else {
-        return $products = [
-            ['name' => 'Cola', 'price' => 2],
-            ['name' => 'Fanta', 'price' => 2],
-            ['name' => 'Sprite', 'price' => 2],
-            ['name' => 'Ice-tea', 'price' => 3],
-        ];}
 }
 
+$totalValue = array_sum($valueArr);
 
-
-
-$totalValue = 0;
-
-
+setcookie("totalSpend", strval($totalValue));
 
 function test_input($data) {
     $data = trim($data);
@@ -136,13 +121,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "is all good";
     }
 }
-var_dump($_SESSION["street"]);
 
 if (isset($_SESSION)) {
-    $street = $_SESSION["street"];
-    $streetnumber = $_SESSION['streetnumber'];
-    $city = $_SESSION['city'];
-    $zipcode = $_SESSION['zipcode'];
+ if (isset($_SESSION["street"]) && isset($_SESSION['streetnumber']) && isset($_SESSION['city']) && isset($_SESSION['city']) && isset($_SESSION['zipcode']))
+ {
+     $street = $_SESSION["street"];
+     $streetnumber = $_SESSION['streetnumber'];
+     $city = $_SESSION['city'];
+     $zipcode = $_SESSION['zipcode'];
+ }
 }
 
 require 'form-view.php';
