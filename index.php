@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 //we are going to use session variables so we need to enable sessions
 session_start();
 
-/*function whatIsHappening() {
+function whatIsHappening() {
     echo '<h2>$_GET</h2>';
     var_dump($_GET);
     echo '<h2>$_POST</h2>';
@@ -19,16 +19,16 @@ session_start();
     echo '<h2>$_SESSION</h2>';
     var_dump($_SESSION);
 }
-whatIsHappening();*/
+whatIsHappening();
 //your products with their price.
 
-$dranks = [
+$productsdranks = [
     ['name' => 'Cola', 'price' => 2],
     ['name' => 'Fanta', 'price' => 2],
     ['name' => 'Sprite', 'price' => 2],
     ['name' => 'Ice-tea', 'price' => 3],
 ];
-$food = [
+$products = [
     ['name' => 'Club vegan cheese', 'price' => 3.20],
     ['name' => 'Club vegan Cheese', 'price' => 3],
     ['name' => 'Club vegan Cheese & Ham', 'price' => 4],
@@ -36,34 +36,43 @@ $food = [
     ['name' => 'Club vegan Salmon', 'price' => 5]
 ];
 
-$products = $dranks;
-if (isset($_GET["food"])) {
-    if ($_GET["food"] == 1) {
-        $products = $food;
-    } else {
-        $products = $dranks;
-    }
+if (!isset($_GET["food"])) {
+    $_GET["food"] = 1;
 }
+
+if ($_GET["food"] == 1) {
+        $products = $products;
+    } else {
+        $products = $productsdranks;
+    }
+
+
 $totalValue = 0;
 $valueArr = [];
+$emptyValue = 0;
 
 if (isset($_POST["products"])) {
     foreach ($products AS $i => $product) {
-        if ($_POST['products'][$i] == '1') {
+        if (isset($_POST['products'][$i])) {
             array_push($valueArr, $product['price']);
         }
     }
 }
 
+$delivery = "";
+
+
 $totalValue = array_sum($valueArr);
 
 if (!isset($_COOKIE["totalspend"])) {
     setcookie("totalspend", strval($totalValue));
+    $spendCookie = "";
 }
 else {
     $spendCookie = $_COOKIE["totalspend"] + $totalValue;
     setcookie("totalspend", strval($totalValue + $_COOKIE["totalspend"]));
 }
+
 var_dump($totalValue);
 var_dump($spendCookie);
 
@@ -127,6 +136,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     if (empty($errArr)) {
         echo "is all good";
+        if (isset($_POST["delivery"])) {
+            if ($_POST["delivery"] == 1) {
+                $delivery = "Your delivery will arrive at ".date('h:i:s A', strtotime('45 minutes'));
+            }
+            else {
+                $delivery = "Your delivery will arrive at ".date('h:i:s A', strtotime('+ 2 hours'));
+            }
+        }
     }
 }
 
