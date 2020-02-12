@@ -57,7 +57,15 @@ if (isset($_POST["products"])) {
 
 $totalValue = array_sum($valueArr);
 
-setcookie("totalSpend", strval($totalValue));
+if (!isset($_COOKIE["totalspend"])) {
+    setcookie("totalspend", strval($totalValue));
+}
+else {
+    $spendCookie = $_COOKIE["totalspend"] + $totalValue;
+    setcookie("totalspend", strval($totalValue + $_COOKIE["totalspend"]));
+}
+var_dump($totalValue);
+var_dump($spendCookie);
 
 function test_input($data) {
     $data = trim($data);
